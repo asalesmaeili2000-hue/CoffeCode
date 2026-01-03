@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@theme {
+    --color-coffee: #3b2a23;
+    --color-accent:#f2c17d;
+    --color-coffeeLight:#f7f4f1;
+}
+body {
+    font-family: 'Vazirmatn', sans-serif;
+}

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>فروشگاه قهوه - صفحه محصول</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link href="/src/css/app.css" rel="stylesheet" />
+
+  <script type="module" src="/src/js/app.js"></script>
+
+</head>
+<body class="bg-coffeeLight text-coffee min-h-screen"  x-data="cart()">
+
+<div class="fixed top-6 right-6 z-50">
+  <template x-if="toast">
+    <div x-transition class="bg-green-100 text-black px-6 py-3 rounded-xl shadow-lg">
+      <span x-text="toast"></span>
+    </div>
+  </template>
+</div>
+
+<header class="bg-gradient-to-l from-[#2b1b16] to-[#5a3a2b] text-white">
+  <div class="max-w-7xl mx-auto px-6 py-10" x-data="{open:false}">
+    <nav class="flex items-center justify-between mb-2">
+      <div class="font-bold text-xl">کٌدکافه</div>
+      <ul class="hidden md:flex gap-8 text-sm" >
+        <li><a href="/index.html" class="hover:text-accent">صفحه نخست</a></li>
+        <li><a href="/product.html" class="hover:text-accent">محصول</a></li>
+        <li><a href="/cart.html" class="hover:text-accent">سبدخرید</a></li>
+        <li><a href="/checkout.html" class="hover:text-accent">تسویه حساب</a></li>
+      </ul>
+      <button @click="open=!open" class="md:hidden">☰</button>
+    </nav>
+  </div>
+</header>
+
+<section class="max-w-7xl mx-auto px-6 py-16 grid lg:grid-cols-3 gap-10">
+
+  <div class="lg:col-span-2 space-y-6">
+    <template x-for="(item,index) in items" :key="item.id">
+      <div class="bg-white rounded-xl p-6 shadow flex gap-6 items-center" x-transition>
+        <img :src="item.img" class="w-24 h-24 rounded-lg object-cover" />
+        <div class="flex-1">
+          <h3 class="font-semibold mb-1" x-text="item.title"></h3>
+          <p class="text-sm opacity-70">250 گرم</p>
+          <button @click="remove(index)" class="text-red-500 text-xs mt-2">حذف</button>
+        </div>
+        <div class="flex flex-col items-end gap-3">
+          <div class="flex items-center border rounded-lg overflow-hidden">
+            <button @click="dec(index)" class="px-3 py-1">-</button>
+            <span class="px-3" x-text="item.qty"></span>
+            <button @click="inc(index)" class="px-3 py-1">+</button>
+          </div>
+          <div class="font-bold text-sm" x-text="format(item.price*item.qty)+' تومان'"></div>
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <div class="bg-white rounded-xl p-6 shadow h-fit sticky top-6">
+    <h2 class="font-bold mb-6">خلاصه سفارش</h2>
+    <div class="flex justify-between mb-3 text-sm">
+      <span>جمع کل</span>
+      <span x-text="format(total())+' تومان'"></span>
+    </div>
+    <div class="flex justify-between mb-6 text-sm">
+      <span>هزینه ارسال</span>
+      <span>رایگان</span>
+    </div>
+    <button class="w-full bg-accent text-coffee py-3 rounded-full font-semibold hover:scale-105 transition" onclick="window.location.href = '/checkout.html'">ادامه ثبت سفارش</button>
+  </div>
+
+</section>
+
+<footer class="bg-[#2b1b16] text-white " >
+  <div class="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-4 gap-8 text-sm">
+    <div>
+      <div class="font-bold mb-3">کٌدکافه</div>
+      <p class="opacity-80">فروشگاه آنلاین انواع قهوه با بهترین کیفیت</p>
+    </div>
+    <div>
+      <div class="font-semibold mb-3">دسترسی سریع</div>
+      <ul class="space-y-2 opacity-80">
+        <li>فروشگاه</li><li>درباره ما</li><li>تماس با ما</li>
+      </ul>
+    </div>
+    <div>
+      <div class="font-semibold mb-3">محصولات</div>
+      <ul class="space-y-2 opacity-80">
+        <li>قهوه</li><li>قهوه فوری</li><li>اکسسوری</li>
+      </ul>
+    </div>
+    <div>
+      <div class="font-semibold mb-3">خبرنامه</div>
+      <div class="flex">
+        <input class="bg-coffeeLight w-full px-3 py-2 rounded-r text-coffee" placeholder="ایمیل خود را وارد کنید" />
+        <button class="bg-accent px-4 rounded-l text-coffee">ارسال</button>
+      </div>
+    </div>
+  </div>
+  <div class="text-center text-xs py-4 border-t border-white/10">© تمامی حقوق محفوظ است</div>
+</footer>
+
+
+<script>
+function cart(){
+  return {
+    toast:null,
+    items:[
+      {id:1,title:'کاپوچینو',price:140000,qty:1,img:'/images/products/ps-1.png'},
+      {id:2,title:'آمریکانو',price:70000,qty:1,img:'/images/products/ps-2.png'},
+      {id:3,title:'قهوه ترک',price:90000,qty:1,img:'/images/products/ps-3.png'},
+      {id:4,title:'لته',price:120000,qty:1,img:'/images/products/ps-4.png'},
+
+    ],
+    inc(i){this.items[i].qty++;this.notify('تعداد به‌روز شد')},
+    dec(i){if(this.items[i].qty>1){this.items[i].qty--;this.notify('تعداد به‌روز شد')}},
+    remove(i){this.items.splice(i,1);this.notify('محصول حذف شد')},
+    total(){return this.items.reduce((s,i)=>s+i.price*i.qty,0)},
+    format(n){return n.toLocaleString('fa-IR')},
+    notify(msg){this.toast=msg;setTimeout(()=>this.toast=null,2000)}
+  }
+}
+</script>
+
+</body>
+</html>

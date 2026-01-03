@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>فروشگاه قهوه - صفحه محصول</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link href="/src/css/app.css" rel="stylesheet" />
+
+  <script type="module" src="/src/js/app.js"></script>
+
+</head>
+<body class="bg-coffeeLight text-coffee" x-data="checkout()">
+
+<div class="fixed top-6 right-6 z-50">
+  <template x-if="toast">
+    <div x-transition class="bg-green-100 text-black px-6 py-3 rounded-xl shadow-lg">
+      <span x-text="toast"></span>
+    </div>
+  </template>
+</div>
+
+<header class="bg-gradient-to-l from-[#2b1b16] to-[#5a3a2b] text-white">
+  <div class="max-w-7xl mx-auto px-6 py-10" x-data="{open:false}">
+    <nav class="flex items-center justify-between mb-2">
+      <div class="font-bold text-xl">کٌدکافه</div>
+      <ul class="hidden md:flex gap-8 text-sm" >
+        <li><a href="/index.html" class="hover:text-accent">صفحه نخست</a></li>
+        <li><a href="/product.html" class="hover:text-accent">محصول</a></li>
+        <li><a href="/cart.html" class="hover:text-accent">سبدخرید</a></li>
+        <li><a href="/checkout.html" class="hover:text-accent">تسویه حساب</a></li>
+      </ul>
+      <button @click="open=!open" class="md:hidden">☰</button>
+    </nav>
+  </div>
+</header>
+
+<section class="max-w-7xl mx-auto px-6 py-16 grid lg:grid-cols-3 gap-10">
+
+  <!-- FORM -->
+  <div class="lg:col-span-2 space-y-8">
+
+    <!-- CUSTOMER INFO -->
+    <div class="bg-white p-6 rounded-xl shadow">
+      <h2 class="font-bold mb-6">اطلاعات گیرنده</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <input class="border rounded-lg px-4 py-3" placeholder="نام" x-model="form.fname" />
+        <input class="border rounded-lg px-4 py-3" placeholder="نام خانوادگی" x-model="form.lname" />
+        <input class="border rounded-lg px-4 py-3" placeholder="کدپستی" x-model="form.postalcode" />
+
+        <input class="border rounded-lg px-4 py-3" placeholder="شماره موبایل" x-model="form.phone" />
+        <input class="border rounded-lg px-4 py-3 md:col-span-2" placeholder="آدرس کامل" x-model="form.address" />
+      </div>
+    </div>
+
+    <!-- SHIPPING -->
+    <div class="bg-white p-6 rounded-xl shadow">
+      <h2 class="font-bold mb-6">روش ارسال</h2>
+      <div class="space-y-4">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="radio" name="ship" checked @change="shipping=0" />
+          <span>پست پیشتاز (رایگان)</span>
+        </label>
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="radio" name="ship" @change="shipping=30000" />
+          <span>پیک شهری (30,000 تومان)</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- PAYMENT -->
+    <div class="bg-white p-6 rounded-xl shadow">
+      <h2 class="font-bold mb-6">روش پرداخت</h2>
+      <div class="space-y-4">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="radio" name="pay" checked />
+          <span>پرداخت آنلاین</span>
+        </label>
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="radio" name="pay" />
+          <span>پرداخت در محل</span>
+        </label>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="bg-white p-6 rounded-xl shadow h-fit sticky top-6">
+    <h2 class="font-bold mb-6">خلاصه سفارش</h2>
+
+    <template x-for="item in items" :key="item.id">
+      <div class="flex justify-between text-sm mb-3">
+        <span x-text="item.title + ' × ' + item.qty"></span>
+        <span x-text="format(item.price*item.qty)"></span>
+      </div>
+    </template>
+
+    <div class="border-t my-4"></div>
+
+    <div class="flex justify-between text-sm mb-2">
+      <span>جمع کل</span>
+      <span x-text="format(subtotal())"></span>
+    </div>
+    <div class="flex justify-between text-sm mb-4">
+      <span>هزینه ارسال</span>
+      <span x-text="format(shipping)"></span>
+    </div>
+
+    <div class="flex justify-between font-bold mb-6">
+      <span>مبلغ نهایی</span>
+      <span x-text="format(subtotal()+shipping)+' تومان'"></span>
+    </div>
+
+    <button @click="submit()" class="w-full bg-accent text-coffee py-3 rounded-full font-semibold hover:scale-105 transition">ثبت سفارش</button>
+  </div>
+
+</section>
+
+
+<footer class="bg-[#2b1b16] text-white " >
+  <div class="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-4 gap-8 text-sm">
+    <div>
+      <div class="font-bold mb-3">کٌدکافه</div>
+      <p class="opacity-80">فروشگاه آنلاین انواع قهوه با بهترین کیفیت</p>
+    </div>
+    <div>
+      <div class="font-semibold mb-3">دسترسی سریع</div>
+      <ul class="space-y-2 opacity-80">
+        <li>فروشگاه</li><li>درباره ما</li><li>تماس با ما</li>
+      </ul>
+    </div>
+    <div>
+      <div class="font-semibold mb-3">محصولات</div>
+      <ul class="space-y-2 opacity-80">
+        <li>قهوه</li><li>قهوه فوری</li><li>اکسسوری</li>
+      </ul>
+    </div>
+    <div>
+      <div class="font-semibold mb-3">خبرنامه</div>
+      <div class="flex">
+        <input class="bg-coffeeLight w-full px-3 py-2 rounded-r text-coffee" placeholder="ایمیل خود را وارد کنید" />
+        <button class="bg-accent px-4 rounded-l text-coffee">ارسال</button>
+      </div>
+    </div>
+  </div>
+  <div class="text-center text-xs py-4 border-t border-white/10">© تمامی حقوق محفوظ است</div>
+</footer>
+
+
+<script>
+function checkout(){
+  return {
+    toast:null,
+    shipping:0,
+    items:[
+      {id:1,title:'قهوه اسپرسو',price:46000,qty:1},
+      {id:2,title:'کاپوچینو',price:46000,qty:2}
+    ],
+    form:{fname:'',lname:'',postalcode: '',phone:'',address:''},
+    subtotal(){return this.items.reduce((s,i)=>s+i.price*i.qty,0)},
+    format(n){return n.toLocaleString('fa-IR')+' تومان'},
+    submit(){
+      if(!this.form.fname || !this.form.phone || !this.form.address){
+        this.toast='لطفاً اطلاعات گیرنده را کامل کنید';
+        setTimeout(()=>this.toast=null,2000);
+        return;
+      }
+      this.toast='سفارش با موفقیت ثبت شد ☕';
+      setTimeout(()=>this.toast=null,2500);
+    }
+  }
+}
+</script>
+
+</body>
+</html>
